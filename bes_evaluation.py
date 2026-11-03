@@ -288,8 +288,8 @@ def verdict_derangements(rows: list[dict], problems: list[str]):
     if problems:
         return "error", "Die Derangement-Zahlen widersprechen n!/e: " + "; ".join(problems)
     r = next(x for x in rows if x["n"] == 10)
-    return "success", (f"D₁₀ = {big_text(r['D_n'])}, also {de(100 * r['D_n / n!'], 2)} % aller Permutationen; die Wahrscheinlichkeit D_n/n! hängt kaum von n ab (1/e = 0,36788) und der Fehler bleibt unter 1/(n+1)! "
-                       f"(gemessen: höchstens das {de(max(x['Fehler·(n+1)!'] for x in rows), 4)}-fache). D_n ist für n = 1 bis {C.DERANGEMENT_CHECK_N} die Rundung von n!/e.")
+    return "success", (f"D₁₀ = {big_text(r['D_n'])}, also {de(100 * r['D_n / n!'], 2)} % aller Permutationen; ab n = 4 hängt die Wahrscheinlichkeit D_n/n! kaum von n ab (1/e = 0,36788) und der Fehler bleibt unter 1/(n+1)! (ein Satz; "
+                       f"gemessen für die angezeigten n: höchstens das {de(max(x['Fehler·(n+1)!'] for x in rows), 4)}-fache). D_n ist für n = 1 bis {C.DERANGEMENT_CHECK_N} die Rundung von n!/e.")
 
 
 # ----------------------------------------------------------------------------- Experiment 4: Stirling-Zeilen und Zyklentypen
@@ -339,7 +339,7 @@ def effort_rows() -> list[dict]:
 def verdict_effort(rows: list[dict]):
     last = rows[-1]
     return "success", (f"Für n = {last['n']} sind es {big_text(last['Summanden exp-Kalkül'])} Summanden im exp-Kalkül und ebenso viele Additionen im Bell-Dreieck; die Bell-Zahl hat {big_text(last['Stellen von B(n)'])} Stellen, "
-                       "Aufzählen aller Mengenpartitionen wäre unmöglich. Gleich viele Schritte heißt nicht gleich viel Zeit: der Kalkül multipliziert große Zahlen, das Dreieck addiert nur (Zeit auf Klick).")
+                       "Aufzählen aller Mengenpartitionen wäre unmöglich. Gleich viele Schritte heißt nicht gleich viel Zeit: der Kalkül berechnet in dieser Implementierung Binomialkoeffizienten neu und multipliziert große Zahlen, das Dreieck addiert nur (Zeit auf Klick).")
 
 
 def time_experiment() -> list[dict]:

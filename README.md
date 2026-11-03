@@ -14,7 +14,7 @@ Stück 5 hat gezählt, wenn die Reihenfolge egal ist; die Bausteine waren dabei 
 - **Hook bestätigt:** Derangements gleich n!/e gerundet (n = 1 bis 300), Zyklentypen und Stirling-Zahlen aus demselben Baukasten.
 - **Stärker als geplant:** Die Zahl der Zyklentypen von n Elementen ist die Partitionszahl aus Stück 5 (42 für n = 10), die Permutationen sind die beschriftete Version (3.628.800): dieselben Objekte zweimal gezählt. Die größte Klasse bei n = 10 ist nicht der volle Zyklus (362.880), sondern ein 9-Zyklus mit einem Fixpunkt (403.200).
 - **Beschriftet ist nicht n! mal unbeschriftet:** beschriftet / (n!·unbeschriftet) fällt bei den Wurzelbäumen von 0,5787 (n = 5) auf 0,0059 (n = 60); das ist der Mittelwert von 1/|Aut| über alle unbeschrifteten Bäume (Deutung, die Stück 11 belegt; hier gemessen).
-- **Zeit und Schritte klaffen auseinander:** Der exp-Kalkül und das Bell-Dreieck haben für Bell(1000) gleich viele Summanden (500.500), aber der Kalkül multipliziert große Zahlen und braucht in Phase 0 13,3 s gegen 0,3 s (Messung, nicht getestet). Die App begrenzt den Kalkül deshalb auf N = 150 (0,01 s) und zeigt n = 1000 im Aufwandsexperiment über das Dreieck.
+- **Zeit und Schritte klaffen auseinander:** Der exp-Kalkül und das Bell-Dreieck haben für Bell(1000) gleich viele Summanden (500.500), aber der Kalkül braucht in dieser Implementierung (Binomialkoeffizienten werden je Summand neu berechnet, dazu große Multiplikationen) in Phase 0 13,3 s gegen 0,3 s (Messung, nicht getestet). Die App begrenzt den Kalkül deshalb auf N = 150 (0,01 s) und zeigt n = 1000 im Aufwandsexperiment über das Dreieck.
 - **Zweiter Rechenweg über Brüche:** Der Plan sah als zweite Formulierung die Rekursion „Block des Elements 1“ vor; sie ist dieselbe Formel wie der Kalkül. Der unabhängige zweite Weg ist darum die gewöhnliche Reihe mit Brüchen (n·ê_n = Σ k·â_k·ê_(n−k)); dazu kommen Dreiecke, Rekursionen, Formeln und Aufzählen.
 - **Falsche Handrechnung (meine, nicht der Code):** In einem Test hatte ich Derangements für n = 4 mit Zykellängen bis 3 gezählt (3 statt 9): die 4-Zyklen fehlten. Der Test wurde korrigiert, der Code war richtig.
 - **Port:** Der Plan sah 9319 vor; die Demo läuft darauf.
@@ -51,7 +51,7 @@ Jede Zahl steht in `tests/test_claims.py`, `tests/test_algorithm.py`, `tests/tes
 - **Literaturwerte aus dem Gedächtnis:** Bell(30), n!/e, Cayley und H_n wurden nicht an einer Quelle gelesen. Mehrere unabhängige Rechenwege stimmen überein; das ersetzt keine Quelle.
 - **Das Verhältnis beschriftet / (n!·unbeschriftet)** ist eine Messung bis n = 60 (der Text sagt „fällt“, nicht „strebt gegen 0“); die Erklärung über 1/|Aut| ist eine Deutung, die Stück 11 belegen muss.
 - **Aufzählen als Prüfer ist begrenzt** (Mengenpartitionen n ≤ 9, Permutationen n ≤ 7, Wurzelbäume n ≤ 6); darüber prüfen sich nur Kalkül, Brüche und Dreiecke gegenseitig. Die gewöhnliche Reihe mit Brüchen läuft nur, wenn der Aufwand klein bleibt (k·(n+1)² ≤ 60.000).
-- **Schritte sind Summanden**, nicht Zeit: gleich viele Schritte können 44-mal verschieden lang dauern (Messung).
+- **Schritte sind Summanden**, nicht Zeit: gleich viele Schritte können je nach n und Implementierung sehr verschieden lang dauern (Messung bei n = 1000: 44-mal).
 - **Nur Mengen, Zyklen und Wurzelbäume:** beschriftete Graphen, zusammenhängende Graphen und Funktionalgraphen brauchen weitere Bausteine.
 - **Blöcke ohne Reihenfolge:** Mit Reihenfolge der Blöcke wären es geordnete Zerlegungen (k!·S(n,k), Surjektionen); verbotene Paare in Zuordnungen zählt die Permanente (Stück 7 und Komplexitätslinie).
 - **Wachstum nur als Zahl:** Wie B(n) wächst und wie schnell D_n/n! sich einpendelt, ist hier eine Tabelle, nicht ein Satz (Stück 9).
@@ -63,13 +63,13 @@ Jede Zahl steht in `tests/test_claims.py`, `tests/test_algorithm.py`, `tests/tes
 ## Verifikation
 
 - **Kern:** Handinstanzen (Mengenpartitionen von 3 Elementen, Permutationen von 3 und 4 Elementen, das Produkt „nichtleere Menge mal Zyklus“, beschriftete Bäume mit 2 und 3 Knoten), Aufzählen der Mengenpartitionen über Wachstumsfolgen, Aufzählen der Permutationen mit ihren Zyklen, Dreiecke von Stirling und Bell, Rekursionen, e als Bruch, Kirchhoffs Determinante, die Siebformel, die gewöhnliche Reihe mit Brüchen; Zufallsfamilien (80 für Mengenpartitionen, 40 mit genau k Blöcken, 40 für Permutationen), festgeschriebene Zahlen aus Stück 5.
-- **Eigenschaften:** ein enthaltener Größenbereich gibt nie mehr Strukturen; höchstens Bell(n) beziehungsweise n!; die k-Block-Reihen summieren sich zur Reihe ohne k; Binomialfaltung kommutativ und assoziativ; exp(A+B) = exp(A)·exp(B); Menge von Zyklen = Folge von Einzelelementen = n!; Derangements plus Permutationen mit Fixpunkten = n!; Surjektionen höchstens k^n; beschriftet höchstens n!·unbeschriftet; das Verhältnis fällt; die Derangement-Wahrscheinlichkeit pendelt sich ein; gleiches Ergebnis in Prozessen mit verschiedenem `PYTHONHASHSEED`.
+- **Eigenschaften:** ein enthaltener Größenbereich gibt nie mehr Strukturen; höchstens Bell(n) beziehungsweise n!; die k-Block-Reihen summieren sich zur Reihe ohne k; Binomialfaltung kommutativ und assoziativ; exp(A+B) = exp(A)·exp(B); Menge von Zyklen = Folge von Einzelelementen = n!; Derangements plus Permutationen mit Fixpunkten = n!; Surjektionen höchstens k^n; beschriftet höchstens n!·unbeschriftet; das Verhältnis fällt (ab n = 3 streng, bei n = 1 und n = 2 gleich 1); die Derangement-Wahrscheinlichkeit pendelt sich ein; gleiches Ergebnis in Prozessen mit verschiedenem `PYTHONHASHSEED`.
 - **Randfälle:** 0 und 1 Element, Blockgröße 1, Blöcke größer als N, k = 0 und k > n, Zahlen über der 4300-Stellen-Grenze von `str`, falsch herum gestellter Bereich (Hinweis), Wurzelbäume mit Blockeinstellungen (Hinweis), zu teure Brüchereihe übersprungen, jede Familie bei den kleinsten Größen, Grenzen der Spielwiese.
 - **Oberfläche:** AppTest-Rauchtest (jeder Button, jeder Regler an Minimum und Maximum), alle Experimente, Permalink mit Müll und Grenzwerten, jede Familie mit k, jedes Preset, Spielwiese, PDF an den Rändern; Footer-Test.
 - **Layout:** Schnellstart oben in der Seitenleiste, fester Kopf, aktives Preset hervorgehoben; jede Änderung eines Reglers hebt die Markierung auf (`tests/test_layout.py`).
 - **Nicht gemacht:** Mutationstests (seit 2026-10-28 nicht mehr verlangt), Docker-Lauf der Linux-CI (Docker fehlt auf diesem Rechner; die CI nach dem Push entscheidet).
 
-733 Tests (`pytest tests`), zuletzt in etwa eineinhalb Minuten auf dem Entwicklungsrechner (Messung, nicht getestet).
+733 Tests (`pytest tests`), zuletzt in etwa einer Minute (58 Sekunden gemessen) auf dem Entwicklungsrechner (Messung, nicht getestet).
 
 ## Dateistruktur
 

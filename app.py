@@ -153,7 +153,7 @@ else:
     m3.metric("Anteil an allen Möglichkeiten", share_text(share), help="Anteil an allen Mengenpartitionen (Bell-Zahl) beziehungsweise allen Permutationen (N!).")
 m4.metric("Schritte der Rechnung", big_text(a.steps), help="Summanden des Hauptwegs (Binomialfaltung), exakt gezählt.")
 st.plotly_chart(build_growth(a.series, 1 if family == "Wurzelbäume" else 0), width="stretch", key="main_chart")
-st.caption("Zehnerlogarithmus der Anzahl je Zahl der Elemente. Die Zahlen wachsen schneller als jede Potenz; nur die logarithmische Achse zeigt sie.")
+st.caption("Zehnerlogarithmus der Anzahl je Zahl der Elemente. Die Zahlen wachsen in den meisten Einstellungen schneller als jede Potenz; nur die logarithmische Achse zeigt sie.")
 with st.expander("Die ersten Werte ansehen"):
     st.dataframe(first_values(a), hide_index=True, width="stretch")
 
@@ -255,7 +255,7 @@ st.markdown(
 | **Die Elemente tragen unterscheidbare Marken** | Ohne Marken zählt die Methode aus Stück 5 etwas anderes: 42 Zahlpartitionen von 10 statt 115.975 Mengenpartitionen (Experiment 2). | Stück 5 der Reihe |
 | **Die Blöcke haben keine Reihenfolge** | Mit Reihenfolge der Blöcke wären es geordnete Zerlegungen: $k!\\,S(n,k)$ (Surjektionen, Spielwiese). | Stück 7: Siebformel |
 | **Jede Beschriftung ist eine eigene Struktur** | „Bis auf Symmetrie“ zählt anders: beschriftet / (n!·unbeschriftet) fällt bei den Wurzelbäumen von 0,58 (n = 5) auf 0,006 (n = 60), denn die meisten unbeschrifteten Bäume haben Symmetrie (Experiment 2). | Stück 11 der Reihe: Burnside und Pólya |
-| **Die Blöcke sind unabhängig** | Verbotene Paare oder Nachbarschaftsbedingungen (zum Beispiel Zuordnungen in einem gegebenen Graphen) lassen sich so nicht zählen; dort zählt die Permanente. | Stück 7 und die Komplexitätslinie |
+| **Die Blöcke sind unabhängig** | Verbotene Paare oder Nachbarschaftsbedingungen (zum Beispiel Zuordnungen in einem gegebenen Graphen) lassen sich so nicht zählen; bei 1:1-Zuordnungen mit verbotenen Paaren zählt die Permanente. | Stück 7 und die Komplexitätslinie |
 | **Ganze Zahlen im Rechner** | Die Zahlen wachsen schnell: B(1000) hat 1.928 Stellen. Die App rechnet exakt, begrenzt aber den Kalkül auf N = {C.N_MAX} Elemente (Zeit). | – |
 | **Nur Mengen, Zyklen und Wurzelbäume** | Beschriftete Graphen, zusammenhängende Graphen und Funktionalgraphen brauchen weitere Bausteine; die Reihe ist dann nicht mehr diese. | – |
 | **Wachstum nur als Zahl** | Wie schnell B(n) und D_n/n! wachsen oder sich einpendeln, steht hier als Tabelle, nicht als Satz. | Stück 9 der Reihe: Asymptotik |
