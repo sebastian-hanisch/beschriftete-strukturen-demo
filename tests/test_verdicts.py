@@ -128,7 +128,7 @@ def test_time_experiment_shape_and_verdict_text():
     rows = [{"n": 200, "exp-Kalkül (Sekunden)": 0.04, "Bell-Dreieck (Sekunden)": 0.002}, {"n": 500, "exp-Kalkül (Sekunden)": 1.0, "Bell-Dreieck (Sekunden)": 0.05}]
     assert ev.verdict_time(rows) == ("info", "Gemessen auf diesem Rechner (Python): n = 500: exp-Kalkül 1,000 s, Bell-Dreieck 0,050 s (etwa das 20-fache). Eine Messung, keine Garantie.")
     res = ev.time_experiment()
-    assert [r["n"] for r in res] == list(C.TIME_NS) and all(r["exp-Kalkül (Sekunden)"] >= 0 and r["Bell-Dreieck (Sekunden)"] >= 0 for r in res)
+    assert [r["n"] for r in res] == list(C.TIME_NS) and all(r["exp-Kalkül (Sekunden)"] >= 0 and r["Bell-Dreieck (Sekunden)"] >= 0 and r["exp-Kalkül mit Pascal-Dreieck (Sekunden)"] >= 0 for r in res)
 
 
 def test_playground_rows_and_verdict():

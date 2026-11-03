@@ -18,6 +18,19 @@ def test_set_of_blocks_of_size_one_or_two_is_the_involution_count():
     assert A.l_exp([0, 1, 1, 0, 0], 4) == [1, 1, 2, 4, 10]
 
 
+def test_exp_pascal_equals_exp_and_refuses_the_same_input():
+    import random
+    rng = random.Random(7)
+    for n in (0, 1, 2, 5, 12, 40):
+        a = [0] + [rng.randint(0, 9) for _ in range(n)]
+        assert A.l_exp_pascal(a, n) == A.l_exp(a, n)
+    assert A.l_exp_pascal(A.blocks("Mengenpartitionen", 1, 60, 60), 60) == A.bell_triangle(60)
+    with pytest.raises(ValueError):
+        A.l_exp_pascal([1, 1, 1], 2)
+    with pytest.raises(ValueError):
+        A.l_exp_pascal([0, 1], 3)
+
+
 def test_set_of_nonempty_blocks_is_bell():
     assert A.l_exp([0, 1, 1, 1, 1, 1, 1], 6) == [1, 1, 2, 5, 15, 52, 203]
 

@@ -60,6 +60,23 @@ def l_exp(a, n_max):
     return e
 
 
+def l_exp_pascal(a, n_max):
+    """Dieselbe Summe wie `l_exp`, aber die Binomialkoeffizienten kommen aus einem vorberechneten Pascal-Dreieck (nur Additionen) statt aus `math.comb` je Summand.
+    Gleiche Ergebnisse und gleiche Summandenzahl; sie zeigt, wie viel der Zeit von `l_exp` im Neuberechnen der Binomialkoeffizienten steckt."""
+    _check(a, n_max)
+    if a[0] != 0:
+        raise ValueError("a[0] muss 0 sein")
+    pascal = [[1]]
+    for n in range(1, n_max):
+        prev = pascal[-1]
+        pascal.append([1] + [prev[i] + prev[i + 1] for i in range(n - 1)] + [1])
+    e = [1] + [0] * n_max
+    for n in range(1, n_max + 1):
+        row = pascal[n - 1]
+        e[n] = sum(row[k - 1] * a[k] * e[n - k] for k in range(1, n + 1))
+    return e
+
+
 def l_seq(a, n_max):
     """Folge von Blöcken, 1/(1 − A) mit a[0] = 0: S_n = Summe_{k=1..n} C(n, k)·a_k·S_(n−k) (die ersten k Marken bilden den ersten Block)."""
     _check(a, n_max)

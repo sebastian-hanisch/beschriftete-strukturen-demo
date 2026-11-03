@@ -13,14 +13,14 @@ Stück 5 hat gezählt, wenn die Reihenfolge egal ist; die Bausteine waren dabei 
 - **Hook bestätigt:** Derangements gleich n!/e gerundet (n = 1 bis 300), Zyklentypen und Stirling-Zahlen aus demselben Baukasten.
 - **Stärker als geplant:** Die Zahl der Zyklentypen von n Elementen ist die Partitionszahl aus Stück 5 (42 für n = 10), die Permutationen sind die beschriftete Version (3.628.800): dieselben Objekte zweimal gezählt. Die größte Klasse bei n = 10 ist nicht der volle Zyklus (362.880), sondern ein 9-Zyklus mit einem Fixpunkt (403.200).
 - **Beschriftet ist nicht n! mal unbeschriftet:** beschriftet / (n!·unbeschriftet) fällt bei den Wurzelbäumen von 0,5787 (n = 5) auf 0,0059 (n = 60); das ist der Mittelwert von 1/|Aut| über alle unbeschrifteten Bäume (Deutung, die Stück 11 belegt; hier gemessen).
-- **Zeit und Schritte klaffen auseinander:** Der exp-Kalkül und das Bell-Dreieck haben für Bell(1000) gleich viele Summanden (500.500), aber der Kalkül braucht in dieser Implementierung (Binomialkoeffizienten werden je Summand neu berechnet, dazu große Multiplikationen) in Phase 0 13,3 s gegen 0,3 s (Messung, nicht getestet). Die App begrenzt den Kalkül deshalb auf N = 150 (0,01 s) und zeigt n = 1000 im Aufwandsexperiment über das Dreieck.
+- **Zeit und Schritte klaffen auseinander:** Der exp-Kalkül und das Bell-Dreieck haben für Bell(1000) gleich viele Summanden (500.500), aber der Kalkül braucht in dieser Implementierung (Binomialkoeffizienten werden je Summand neu berechnet, dazu große Multiplikationen) in Phase 0 13,3 s gegen 0,3 s (Messung, nicht getestet). Die App begrenzt den Kalkül deshalb auf N = 150 (0,01 s) und zeigt n = 1000 im Aufwandsexperiment über das Dreieck. Die Variante `l_exp_pascal` (dieselbe Summe, Binomialkoeffizienten aus einem vorberechneten Pascal-Dreieck, gleiche Ergebnisse, getestet) braucht für Bell(1000) in einem Lauf dieses Rechners 0,8 s statt 5,8 s für `l_exp` gegen 0,13 s für das Bell-Dreieck (Messung, nicht getestet, rechnerabhängig): Der größere Teil des Abstands kommt vom Neuberechnen der Binomialkoeffizienten, ein kleinerer vom Multiplizieren großer Zahlen. In der App steht sie als dritte Spalte der Zeitmessung.
 - **Zweiter Rechenweg über Brüche:** Der Plan sah als zweite Formulierung die Rekursion „Block des Elements 1“ vor; sie ist dieselbe Formel wie der Kalkül. Der unabhängige zweite Weg ist darum die gewöhnliche Reihe mit Brüchen (n·ê_n = Σ k·â_k·ê_(n−k)); dazu kommen Dreiecke, Rekursionen, Formeln und Aufzählen.
 - **Falsche Handrechnung (meine, nicht der Code):** In einem Test hatte ich Derangements für n = 4 mit Zykellängen bis 3 gezählt (3 statt 9): die 4-Zyklen fehlten. Der Test wurde korrigiert, der Code war richtig.
 - **Port:** Der Plan sah 9319 vor; die Demo läuft darauf.
 
 ## Modell
 
-Eine Folge `a` bedeutet a[n] = n!·[zⁿ]A(z): die Zahl der beschrifteten Strukturen mit den Marken 1 bis n. `l_mul` ist die Binomialfaltung (Marken auf beide Teile verteilen), `l_exp` die Menge von Blöcken (das Element 1 liegt in einem Block der Größe k: E_n = Σ C(n−1, k−1)·a_k·E_(n−k)), `l_seq` die Folge, `l_cyc` der Zyklus, `l_pow_over_fact` genau k Blöcke (A^k/k!). `blocks` baut die Blöcke (Menge: eine Möglichkeit je Größe, Zyklus: (k−1)! Möglichkeiten) mit Größen in einem Bereich. Familien: Mengenpartitionen, Permutationen (Zyklen) und beschriftete Wurzelbäume (T = z·exp(T)). Die Formeln stehen im 📐-Expander der App.
+Eine Folge `a` bedeutet a[n] = n!·[zⁿ]A(z): die Zahl der beschrifteten Strukturen mit den Marken 1 bis n. `l_mul` ist die Binomialfaltung (Marken auf beide Teile verteilen), `l_exp` (und `l_exp_pascal`, dieselbe Summe mit vorberechnetem Pascal-Dreieck) die Menge von Blöcken (das Element 1 liegt in einem Block der Größe k: E_n = Σ C(n−1, k−1)·a_k·E_(n−k)), `l_seq` die Folge, `l_cyc` der Zyklus, `l_pow_over_fact` genau k Blöcke (A^k/k!). `blocks` baut die Blöcke (Menge: eine Möglichkeit je Größe, Zyklus: (k−1)! Möglichkeiten) mit Größen in einem Bereich. Familien: Mengenpartitionen, Permutationen (Zyklen) und beschriftete Wurzelbäume (T = z·exp(T)). Die Formeln stehen im 📐-Expander der App.
 
 ## Methodik
 
@@ -68,7 +68,7 @@ Jede Zahl steht in `tests/test_claims.py`, `tests/test_algorithm.py`, `tests/tes
 - **Layout:** Schnellstart oben in der Seitenleiste, fester Kopf, aktives Preset hervorgehoben; jede Änderung eines Reglers hebt die Markierung auf (`tests/test_layout.py`).
 - **Nicht gemacht:** Mutationstests (seit 2026-10-28 nicht mehr verlangt), Docker-Lauf der Linux-CI (Docker fehlt auf diesem Rechner; die CI nach dem Push entscheidet).
 
-733 Tests (`pytest tests`), zuletzt in etwa einer Minute (58 Sekunden gemessen) auf dem Entwicklungsrechner (Messung, nicht getestet).
+734 Tests (`pytest tests`), zuletzt in etwa einer Minute (58 Sekunden gemessen) auf dem Entwicklungsrechner (Messung, nicht getestet).
 
 ## Dateistruktur
 

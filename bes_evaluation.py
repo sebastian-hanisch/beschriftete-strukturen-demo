@@ -351,7 +351,9 @@ def time_experiment() -> list[dict]:
         t1 = time.perf_counter()
         A.bell_triangle(n)
         t2 = time.perf_counter()
-        rows.append({"n": n, "exp-Kalkül (Sekunden)": t1 - t0, "Bell-Dreieck (Sekunden)": t2 - t1})
+        A.l_exp_pascal(a, n)
+        t3 = time.perf_counter()
+        rows.append({"n": n, "exp-Kalkül (Sekunden)": t1 - t0, "Bell-Dreieck (Sekunden)": t2 - t1, "exp-Kalkül mit Pascal-Dreieck (Sekunden)": t3 - t2})
     return rows
 
 

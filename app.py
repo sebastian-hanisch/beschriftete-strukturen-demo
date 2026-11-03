@@ -226,7 +226,8 @@ if st.button("⏱️ Zeit messen", key="time_run"):
     st.session_state["time_res"] = time_experiment()
 timing = st.session_state.get("time_res")
 if timing:
-    st.dataframe([{"n": r["n"], "exp-Kalkül (Sekunden)": de(r["exp-Kalkül (Sekunden)"], 3), "Bell-Dreieck (Sekunden)": de(r["Bell-Dreieck (Sekunden)"], 3)} for r in timing], hide_index=True, width="stretch")
+    st.dataframe([{"n": r["n"], "exp-Kalkül (Sekunden)": de(r["exp-Kalkül (Sekunden)"], 3), "Bell-Dreieck (Sekunden)": de(r["Bell-Dreieck (Sekunden)"], 3),
+                   "exp-Kalkül mit Pascal-Dreieck (Sekunden)": de(r["exp-Kalkül mit Pascal-Dreieck (Sekunden)"], 3)} for r in timing], hide_index=True, width="stretch")
     verdict(verdict_time(timing))
 
 st.markdown("---")
