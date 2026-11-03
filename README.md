@@ -1,7 +1,6 @@
 # Beschriftete Strukturen – wenn die Bausteine Marken tragen – Streamlit-Demo
 
-<!-- TODO nach dem Deploy: direkt hierher den Live-Link setzen (Leerzeile davor und danach):
-**[→ Demo live ausprobieren](https://sebastianhanisch-beschriftete-strukturen-demo.streamlit.app/)** -->
+**[→ Demo live ausprobieren](https://sebastianhanisch-beschriftete-strukturen-demo.streamlit.app/)**
 
 Stück 6 von 16 der Reihe **„Abzählen und erzeugende Funktionen“** in der „Konzepte“-Reihe für die Website „Sebastian Hanisch – Operations Research und Machine Learning“ (die Linie wird erst vollständig veröffentlicht). Vorgänger sind `aufzaehlen-rekursion-demo` (Stück 1), `rationale-ef-demo` (Stück 2), `symbolische-methode-demo` (Stück 3), `semiring-rekursion-demo` (Stück 4) und `multimengen-partitionen-demo` (Stück 5). Diese Demo zählt **beschriftete** Strukturen: Die Elemente tragen die Marken 1 bis n und sind verschieden (Gegenstände, Aufgaben, Punkte, Mannschaften). Das Produkt zweier Strukturen verteilt die Marken auf beide Teile (eine Binomialfaltung, hinter der die exponentielle erzeugende Funktion steht), und aus Menge, Zyklus und Folge entstehen Mengenpartitionen mit den Bell-Zahlen, Permutationen und Derangements, die Stirling-Zahlen beider Arten und beschriftete Wurzelbäume (n^(n−1)). Mit „Mengenpartition“ ist hier die Zerlegung einer Menge in Blöcke gemeint, nicht die Zahlpartition (Stück 5) und nicht das Partitionsproblem der Komplexitätstheorie.
 
@@ -123,4 +122,4 @@ Gebaut mit Streamlit, Plotly und fpdf2.
 
 ---
 
-Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). Mehr zu den Demos: [Interaktive Demos](https://sebastianhanisch.net/demos.html).
+Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). Mehr zur Reihe: [Abzählen: von der Rekursion zur Verfahrenswahl](https://sebastianhanisch.net/konzepte-abzaehlen.html).
