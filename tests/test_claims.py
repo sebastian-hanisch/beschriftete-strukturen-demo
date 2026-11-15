@@ -75,7 +75,7 @@ def test_readme_the_surjection_sieve():
 
 def test_readme_effort_numbers():
     rows = ev.effort_rows()
-    assert [(r["n"], r["Summanden exp-Kalkül"], r["Stellen von B(n)"]) for r in rows] == [(100, 5050, 116), (200, 20100, 276), (500, 125250, 844), (1000, 500500, 1928)]
+    assert [(r["n"], r["Summanden Binomialfaltung"], r["Stellen von B(n)"]) for r in rows] == [(100, 5050, 116), (200, 20100, 276), (500, 125250, 844), (1000, 500500, 1928)]
     assert A.digit_count(A.bell_triangle(2000)[2000]) == 4350 > 4300
     assert A.exp_steps(1000) == A.bell_triangle_steps(1000) == 500500
 
@@ -87,13 +87,13 @@ def test_readme_product_set_times_cycle():
 def test_readme_presets():
     s = ev.Settings
     expected = {"Standardfall: Bell-Zahl von 10": 115975, "Clustering: 10 Punkte in 3 Cluster": 9330, "Packen: 12 Gegenstände, Gruppen bis 4": 3305017, "Dreiergruppen: 12 Personen": 15400,
-                "Turnier: 8 Mannschaften in Paare": 105, "Derangements von 10": 1334961, "Involutionen von 10": 9496, "Permutationen mit 3 Zyklen (Stirling erster Art)": 1172700,
+                "Turnier: 8 Mannschaften in Paare": 105, "Fixpunktfreie Permutationen von 10": 1334961, "Involutionen von 10": 9496, "Permutationen mit 3 Zyklen (Stirling erster Art)": 1172700,
                 "Beschriftete Wurzelbäume (Cayley)": 10 ** 9}
     assert set(expected) == set(C.PRESETS)
     for name, value in expected.items():
         a = ev.analyse(s(**C.PRESETS[name]))
         assert a.series[a.n_eff] == value, name
-    assert round(ev.share_of_all(ev.analyse(s(**C.PRESETS["Derangements von 10"]))), 3) == 0.368
+    assert round(ev.share_of_all(ev.analyse(s(**C.PRESETS["Fixpunktfreie Permutationen von 10"]))), 3) == 0.368
     assert A.unlabelled_rooted_trees(10)[10] == 719
 
 

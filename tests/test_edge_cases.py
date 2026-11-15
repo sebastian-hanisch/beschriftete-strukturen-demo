@@ -44,7 +44,7 @@ def test_huge_numbers_never_pass_through_str():
 def test_large_calculus_is_exact_and_formatted():
     a = ev.analyse(ev.Settings("Mengenpartitionen", 150, 1, 150, 0))
     assert a.series[150] == A.bell_triangle(150)[150] and a.problems == []
-    assert [w["Weg"] for w in a.ways if w["Wert"] is not None] == ["Binomialfaltung (exp-Kalkül)", "Reihe mit Brüchen (exponentielle EGF)", "Bell-Dreieck"]
+    assert [w["Weg"] for w in a.ways if w["Wert"] is not None] == ["Binomialfaltung (Hauptweg)", "Reihe mit Brüchen (gewöhnliche Reihe)", "Bell-Dreieck"]
 
 
 def test_fraction_path_is_skipped_when_too_expensive():

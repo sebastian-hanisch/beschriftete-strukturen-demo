@@ -93,7 +93,7 @@ def label_of(family: str, n: int, lo: int, hi: int, k):
     if lo == 1 and full:
         return "alle Permutationen, n!" if k is None else f"Stirling-Zahl erster Art c({n},{k})"
     if k is None and lo == 2 and full:
-        return "Derangements"
+        return "fixpunktfrei, auch Derangements genannt"
     if k is None and lo == 1 and hi == 2:
         return "Involutionen"
     return None
@@ -130,38 +130,38 @@ def analyse(s: Settings) -> Analysis:
     if s.family == "Wurzelbäume":
         series = A.labelled_rooted_trees(n)
         steps = n * (n - 1) // 2
-        add("Kalkül T = z·exp(T)", series[n], steps)
+        add("Gleichung T = z·exp(T)", series[n], steps)
         add("Formel von Cayley nⁿ⁻¹", n ** (n - 1), 1)
         if any(series[m] != m ** (m - 1) for m in range(1, n + 1)):
-            problems.append("Kalkül und Cayley-Formel weichen ab")
+            problems.append("Binomialfaltung und Cayley-Formel weichen ab")
         if n <= C.KIRCHHOFF_N:
             kir = n * A.kirchhoff_trees(n)
             add("Kirchhoff (Spannbäume von Kₙ mal n Wurzeln)", kir, n ** 3)
             if kir != series[n]:
-                problems.append(f"Kirchhoff ({kir}) und Kalkül ({series[n]}) weichen bei n = {n} ab")
+                problems.append(f"Kirchhoff ({kir}) und Binomialfaltung ({series[n]}) weichen bei n = {n} ab")
         else:
             add("Kirchhoff (Spannbäume von Kₙ mal n Wurzeln)", None, None, f"nur bis n = {C.KIRCHHOFF_N}")
         if n <= C.ENUM_TREES_N:
             count = A.enumerate_rooted_trees(n)
             add("Aufzählen aller Elternfunktionen", count, n ** n)
             if count != series[n]:
-                problems.append(f"Aufzählen ({count}) und Kalkül ({series[n]}) weichen bei n = {n} ab")
+                problems.append(f"Aufzählen ({count}) und Binomialfaltung ({series[n]}) weichen bei n = {n} ab")
         else:
             add("Aufzählen aller Elternfunktionen", None, None, f"nur bis n = {C.ENUM_TREES_N}")
         return Analysis(s, n, lo, hi, k, series, ways, steps, problems, notes)
 
     series = A.structures(s.family, lo, hi, k, n)
     steps = A.exp_steps(n) if k is None else k * A.mul_steps(n)
-    add("Binomialfaltung (exp-Kalkül)", series[n], steps)
+    add("Binomialfaltung (Hauptweg)", series[n], steps)
     a = A.blocks(s.family, lo, hi, n)
     cost = (1 if k is None else k) * (n + 1) ** 2
     if cost <= C.FRACTION_BUDGET:
         frac = A.egf_fraction_exp(a, n) if k is None else A.egf_fraction_power(a, k, n)
-        add("Reihe mit Brüchen (exponentielle EGF)", frac[n], cost)
+        add("Reihe mit Brüchen (gewöhnliche Reihe)", frac[n], cost)
         if frac != series:
             problems.append("Reihe mit Brüchen und Binomialfaltung weichen ab")
     else:
-        add("Reihe mit Brüchen (exponentielle EGF)", None, None, "übersprungen: zu viele Rechenschritte")
+        add("Reihe mit Brüchen (gewöhnliche Reihe)", None, None, "übersprungen: zu viele Rechenschritte")
     known = A.known_value(s.family, lo, hi, k, n)
     if known is not None:
         name, value = known
@@ -214,6 +214,13 @@ def _one(text: str) -> str:
     return text.replace("Mengenpartitionen", "Mengenpartition", 1).replace("Permutationen", "Permutation", 1)
 
 
+def _ways_text(checked: list) -> str:
+    """„2 Rechenwege (A, B) geben dieselbe Zahl.“ beziehungsweise Einzahl bei genau einem Weg."""
+    if len(checked) == 1:
+        return f"Der einzige gerechnete Weg ({checked[0]}) gibt diese Zahl."
+    return f"{len(checked)} Rechenwege ({', '.join(checked)}) geben dieselbe Zahl."
+
+
 def verdict_answers(a: Analysis):
     s = a.settings
     c = a.series[a.n_eff]
@@ -222,21 +229,21 @@ def verdict_answers(a: Analysis):
     checked = [w["Weg"] for w in a.ways if w["Wert"] is not None]
     if s.family == "Wurzelbäume":
         what = "beschriftete Wurzelbäume" if c != 1 else "beschrifteten Wurzelbaum"
-        head = f"Mit {a.n_eff} Knoten gibt es {big_text(c)} {what}; ohne Marken (Stück 5) wären es {big_text(A.unlabelled_rooted_trees(a.n_eff)[a.n_eff])}."
+        head = f"Mit {a.n_eff} Knoten gibt es {big_text(c)} {what}; ohne Beschriftungen (Stück 5) wären es {big_text(A.unlabelled_rooted_trees(a.n_eff)[a.n_eff])}."
     else:
         label = label_of(s.family, a.n_eff, a.lo, a.hi, a.k)
         subject = f"{a.n_eff} verschiedene Elemente ergeben" if a.n_eff > 1 else "Ein Element ergibt"
         what = noun(s.family, a.lo, a.hi, a.k)
         head = f"{subject} {big_text(c)} {_one(what) if c == 1 else what}" + (f" ({label})." if label else ".")
-    return "success", f"{head} {len(checked)} Rechenweg(e) ({', '.join(checked)}) geben dieselbe Zahl."
+    return "success", f"{head} {_ways_text(checked)}"
 
 
-# ----------------------------------------------------------------------------- Experiment 2: warum Marken?
+# ----------------------------------------------------------------------------- Experiment 2: warum Beschriftungen?
 
 def why_rows() -> list[dict]:
     top = max(C.WHY_NS)
     bell, p = A.bell_triangle(top), A.partition_numbers(top)
-    return [{"n": n, "Bell-Zahl (mit Marken)": bell[n], "Zahlpartitionen (ohne Marken, Stück 5)": p[n], "Faktor": bell[n] / p[n]} for n in C.WHY_NS]
+    return [{"n": n, "Bell-Zahl (mit Beschriftungen)": bell[n], "Zahlpartitionen (ohne Beschriftungen, Stück 5)": p[n], "Faktor": bell[n] / p[n]} for n in C.WHY_NS]
 
 
 def tree_why_rows() -> list[dict]:
@@ -254,12 +261,12 @@ def tree_ratio_series() -> dict:
 
 def verdict_why(rows: list[dict], trees: list[dict]):
     r, t = rows[-1], trees[-1]
-    return "warning", (f"Bei n = {r['n']} gibt es {big_text(r['Bell-Zahl (mit Marken)'])} Mengenpartitionen, aber nur {big_text(r['Zahlpartitionen (ohne Marken, Stück 5)'])} Zahlpartitionen: "
-                       f"die Methode ohne Marken zählt etwas anderes. Auch „n! mal unbeschriftet“ trifft die beschrifteten Bäume nicht: bei n = {t['n']} ist das Verhältnis beschriftet / (n!·unbeschriftet) nur {de(t['beschriftet / (n!·unbeschriftet)'], 4)}, "
+    return "warning", (f"Bei n = {r['n']} gibt es {big_text(r['Bell-Zahl (mit Beschriftungen)'])} Mengenpartitionen, aber nur {big_text(r['Zahlpartitionen (ohne Beschriftungen, Stück 5)'])} Zahlpartitionen: "
+                       f"die Methode ohne Beschriftungen zählt etwas anderes. Auch „n! mal unbeschriftet“ trifft die beschrifteten Bäume nicht: bei n = {t['n']} ist das Verhältnis beschriftet / (n!·unbeschriftet) nur {de(t['beschriftet / (n!·unbeschriftet)'], 4)}, "
                        "denn die meisten unbeschrifteten Bäume haben Symmetrie (Stück 11).")
 
 
-# ----------------------------------------------------------------------------- Experiment 3: Derangements
+# ----------------------------------------------------------------------------- Experiment 3: fixpunktfreie Permutationen
 
 def derangement_rows() -> list[dict]:
     e = sum(Fraction(1, math.factorial(j)) for j in range(C.E_TERMS))
@@ -286,7 +293,7 @@ def derangement_check() -> list[str]:
 
 def verdict_derangements(rows: list[dict], problems: list[str]):
     if problems:
-        return "error", "Die Derangement-Zahlen widersprechen n!/e: " + "; ".join(problems)
+        return "error", "Die Zahlen der fixpunktfreien Permutationen widersprechen n!/e: " + "; ".join(problems)
     r = next(x for x in rows if x["n"] == 10)
     return "success", (f"D₁₀ = {big_text(r['D_n'])}, also {de(100 * r['D_n / n!'], 2)} % aller Permutationen; ab n = 4 hängt die Wahrscheinlichkeit D_n/n! kaum von n ab (1/e = 0,36788) und der Fehler bleibt unter 1/(n+1)! (ein Satz; "
                        f"gemessen für die angezeigten n: höchstens das {de(max(x['Fehler·(n+1)!'] for x in rows), 4)}-fache). D_n ist für n = 1 bis {C.DERANGEMENT_CHECK_N} die Rundung von n!/e.")
@@ -311,7 +318,7 @@ def row_checks(res: dict) -> list[str]:
     if sum(res["c"]) != res["perms"]:
         problems.append("Summe der Stirling-Zahlen erster Art ist nicht n!")
     if sum(res["S"]) != A.structures("Mengenpartitionen", 1, n, None, n)[n]:
-        problems.append("Bell-Zahl weicht vom Kalkül ab")
+        problems.append("Bell-Zahl weicht von der Binomialfaltung ab")
     if sum(A.cycle_type_counts(n).values()) != res["perms"]:
         problems.append("Zyklentypen ergeben nicht n!")
     if Fraction(sum((k + 1) * v for k, v in enumerate(res["c"])), res["perms"]) != res["H"]:
@@ -333,13 +340,13 @@ def verdict_rows(res: dict, problems: list[str]):
 def effort_rows() -> list[dict]:
     top = max(C.EFFORT_NS)
     bell = A.bell_triangle(top)
-    return [{"n": n, "Summanden exp-Kalkül": A.exp_steps(n), "Additionen Bell-Dreieck": A.bell_triangle_steps(n), "Stellen von B(n)": A.digit_count(bell[n]), "Mengenpartitionen B(n)": bell[n]} for n in C.EFFORT_NS]
+    return [{"n": n, "Summanden Binomialfaltung": A.exp_steps(n), "Additionen Bell-Dreieck": A.bell_triangle_steps(n), "Stellen von B(n)": A.digit_count(bell[n]), "Mengenpartitionen B(n)": bell[n]} for n in C.EFFORT_NS]
 
 
 def verdict_effort(rows: list[dict]):
     last = rows[-1]
-    return "success", (f"Für n = {last['n']} sind es {big_text(last['Summanden exp-Kalkül'])} Summanden im exp-Kalkül und ebenso viele Additionen im Bell-Dreieck; die Bell-Zahl hat {big_text(last['Stellen von B(n)'])} Stellen, "
-                       "Aufzählen aller Mengenpartitionen wäre unmöglich. Gleich viele Schritte heißt nicht gleich viel Zeit: der Kalkül berechnet in dieser Implementierung Binomialkoeffizienten neu und multipliziert große Zahlen, das Dreieck addiert nur (Zeit auf Klick).")
+    return "success", (f"Für n = {last['n']} sind es {big_text(last['Summanden Binomialfaltung'])} Summanden in der Binomialfaltung und ebenso viele Additionen im Bell-Dreieck; die Bell-Zahl hat {big_text(last['Stellen von B(n)'])} Stellen, "
+                       "Aufzählen aller Mengenpartitionen wäre unmöglich. Gleich viele Schritte heißt nicht gleich viel Zeit: die Binomialfaltung berechnet in dieser Implementierung Binomialkoeffizienten neu und multipliziert große Zahlen, das Dreieck addiert nur (Zeit auf Klick).")
 
 
 def time_experiment() -> list[dict]:
@@ -353,14 +360,14 @@ def time_experiment() -> list[dict]:
         t2 = time.perf_counter()
         A.l_exp_pascal(a, n)
         t3 = time.perf_counter()
-        rows.append({"n": n, "exp-Kalkül (Sekunden)": t1 - t0, "Bell-Dreieck (Sekunden)": t2 - t1, "exp-Kalkül mit Pascal-Dreieck (Sekunden)": t3 - t2})
+        rows.append({"n": n, "Binomialfaltung (Sekunden)": t1 - t0, "Bell-Dreieck (Sekunden)": t2 - t1, "Binomialfaltung mit Pascal-Dreieck (Sekunden)": t3 - t2})
     return rows
 
 
 def verdict_time(rows: list[dict]):
     last = rows[-1]
-    return "info", (f"Gemessen auf diesem Rechner (Python): n = {last['n']}: exp-Kalkül {de(last['exp-Kalkül (Sekunden)'], 3)} s, Bell-Dreieck {de(last['Bell-Dreieck (Sekunden)'], 3)} s "
-                    f"(etwa das {de(last['exp-Kalkül (Sekunden)'] / max(last['Bell-Dreieck (Sekunden)'], 1e-9), 0)}-fache). Eine Messung, keine Garantie.")
+    return "info", (f"Gemessen auf diesem Rechner (Python): n = {last['n']}: Binomialfaltung {de(last['Binomialfaltung (Sekunden)'], 3)} s, Bell-Dreieck {de(last['Bell-Dreieck (Sekunden)'], 3)} s "
+                    f"(etwa das {de(last['Binomialfaltung (Sekunden)'] / max(last['Bell-Dreieck (Sekunden)'], 1e-9), 0)}-fache). Eine Messung, keine Garantie.")
 
 
 # ----------------------------------------------------------------------------- Spielwiese: Zuordnen, Clustern, Packen

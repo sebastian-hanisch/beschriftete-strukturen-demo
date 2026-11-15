@@ -111,7 +111,7 @@ def test_known_value_by_hand():
     assert A.known_value("Mengenpartitionen", 1, 150, 2, 4) == ("Stirling-Dreieck (zweite Art)", 7)
     assert A.known_value("Mengenpartitionen", 3, 3, None, 6)[1] == 10 and A.known_value("Mengenpartitionen", 3, 3, None, 7)[1] == 0
     assert A.known_value("Mengenpartitionen", 2, 2, None, 4)[1] == 3
-    assert A.known_value("Permutationen", 2, 150, None, 4) == ("Rekursion der Derangements", 9)
+    assert A.known_value("Permutationen", 2, 150, None, 4) == ("Rekursion der fixpunktfreien Permutationen", 9)
     assert A.known_value("Permutationen", 1, 2, None, 4)[1] == 10 and A.known_value("Mengenpartitionen", 1, 2, None, 4)[1] == 10
     assert A.known_value("Permutationen", 1, 150, 2, 4) == ("Stirling-Dreieck (erste Art)", 11) and A.known_value("Permutationen", 1, 150, None, 4) == ("Fakultät", 24)
     assert A.known_value("Permutationen", 3, 4, None, 6) is None and A.known_value("Mengenpartitionen", 2, 5, 2, 6) is None

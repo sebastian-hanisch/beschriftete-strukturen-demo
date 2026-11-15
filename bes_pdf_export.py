@@ -26,7 +26,7 @@ def build_pdf(a: Analysis) -> bytes:
     pdf.set_font("Helvetica", "", 10)
     s = a.settings
     extra = "" if s.family == "Wurzelbäume" else f", Blockgroesse {a.lo} bis {a.hi}" + ("" if a.k is None else f", genau {a.k} Bloecke")
-    pdf.multi_cell(0, 5, _s(f"Familie: {s.family}, {a.n_eff} Elemente{extra}. Alles gerechnet, keine Messdaten."), new_x="LMARGIN", new_y="NEXT")
+    pdf.multi_cell(0, 5, _s(f"Art: {s.family}, {a.n_eff} Elemente{extra}. Alles gerechnet, keine Messdaten."), new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
     pdf.multi_cell(0, 5, _s(verdict_answers(a)[1]), new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)

@@ -1,4 +1,4 @@
-"""Orakel-Tests: der beschriftete Kalkül gegen unabhängige Rechenwege (DEMO-PLAYBOOK §12, ORACLE-PLAYBOOK §5).
+"""Orakel-Tests: die beschriftete Binomialfaltung gegen unabhängige Rechenwege (DEMO-PLAYBOOK §12, ORACLE-PLAYBOOK §5).
 
 Unabhängig heißt: Aufzählen aller Mengenpartitionen über Wachstumsfolgen (restricted growth strings, ohne die Erzeugung des Moduls), Aufzählen aller Permutationen mit ihren Zyklen,
 die Dreiecke von Stirling und Bell, Rekursionen, e als Bruch, Kirchhoffs Determinante, die Siebformel und die Reihe mit Brüchen. Feste Zufallsstände."""

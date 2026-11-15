@@ -19,7 +19,7 @@ def test_range_text_label_and_noun():
     assert ev.label_of("Mengenpartitionen", 10, 1, 2, None) == "Involutionszahl" and ev.label_of("Mengenpartitionen", 8, 2, 2, None) == "Zerlegungen in Paare, Doppelfakultät"
     assert ev.label_of("Mengenpartitionen", 12, 1, 4, None) is None and ev.label_of("Mengenpartitionen", 12, 3, 3, None) is None
     assert ev.label_of("Permutationen", 10, 1, 150, None) == "alle Permutationen, n!" and ev.label_of("Permutationen", 10, 1, 150, 3) == "Stirling-Zahl erster Art c(10,3)"
-    assert ev.label_of("Permutationen", 10, 2, 150, None) == "Derangements" and ev.label_of("Permutationen", 10, 1, 2, None) == "Involutionen" and ev.label_of("Permutationen", 10, 3, 5, None) is None
+    assert ev.label_of("Permutationen", 10, 2, 150, None) == "fixpunktfrei, auch Derangements genannt" and ev.label_of("Permutationen", 10, 1, 2, None) == "Involutionen" and ev.label_of("Permutationen", 10, 3, 5, None) is None
     assert ev.label_of("Wurzelbäume", 10, 1, 150, None) == "nⁿ⁻¹ nach Cayley"
     assert ev.noun("Mengenpartitionen", 1, 150, None) == "Mengenpartitionen" and ev.noun("Mengenpartitionen", 1, 150, 3) == "Mengenpartitionen mit genau 3 Blöcken"
     assert ev.noun("Permutationen", 3, 5, 2) == "Permutationen mit Zykellänge 3 bis 5 und genau 2 Zyklen" and ev.noun("Permutationen", 2, 150, None) == "Permutationen mit Zykellänge mindestens 2"
@@ -28,18 +28,18 @@ def test_range_text_label_and_noun():
 
 def test_verdict_answers_standard_and_named_cases():
     assert ev.verdict_answers(ev.analyse(S())) == ("success", "10 verschiedene Elemente ergeben 115.975 Mengenpartitionen (Bell-Zahl). "
-                                                             "3 Rechenweg(e) (Binomialfaltung (exp-Kalkül), Reihe mit Brüchen (exponentielle EGF), Bell-Dreieck) geben dieselbe Zahl.")
+                                                             "3 Rechenwege (Binomialfaltung (Hauptweg), Reihe mit Brüchen (gewöhnliche Reihe), Bell-Dreieck) geben dieselbe Zahl.")
     text = ev.verdict_answers(ev.analyse(S("Mengenpartitionen", 10, 1, 150, 3)))[1]
     assert text.startswith("10 verschiedene Elemente ergeben 9.330 Mengenpartitionen mit genau 3 Blöcken (Stirling-Zahl zweiter Art S(10,3)).")
     text = ev.verdict_answers(ev.analyse(S("Permutationen", 10, 2, 150, 0)))[1]
-    assert text.startswith("10 verschiedene Elemente ergeben 1.334.961 Permutationen mit Zykellänge mindestens 2 (Derangements).")
-    assert ev.verdict_answers(ev.analyse(S("Mengenpartitionen", 12, 1, 4, 0)))[1].startswith("12 verschiedene Elemente ergeben 3.305.017 Mengenpartitionen mit Blockgröße 1 bis 4. 2 Rechenweg(e)")
-    assert ev.verdict_answers(ev.analyse(S("Mengenpartitionen", 8, 2, 2, 0)))[1].startswith("8 verschiedene Elemente ergeben 105 Mengenpartitionen mit Blockgröße 2 (Zerlegungen in Paare, Doppelfakultät). 4 Rechenweg(e)")
+    assert text.startswith("10 verschiedene Elemente ergeben 1.334.961 Permutationen mit Zykellänge mindestens 2 (fixpunktfrei, auch Derangements genannt).")
+    assert ev.verdict_answers(ev.analyse(S("Mengenpartitionen", 12, 1, 4, 0)))[1].startswith("12 verschiedene Elemente ergeben 3.305.017 Mengenpartitionen mit Blockgröße 1 bis 4. 2 Rechenwege")
+    assert ev.verdict_answers(ev.analyse(S("Mengenpartitionen", 8, 2, 2, 0)))[1].startswith("8 verschiedene Elemente ergeben 105 Mengenpartitionen mit Blockgröße 2 (Zerlegungen in Paare, Doppelfakultät). 4 Rechenwege")
 
 
 def test_verdict_answers_for_trees_and_singular():
     kind, text = ev.verdict_answers(ev.analyse(S("Wurzelbäume", 4)))
-    assert kind == "success" and text.startswith("Mit 4 Knoten gibt es 64 beschriftete Wurzelbäume; ohne Marken (Stück 5) wären es 4. 4 Rechenweg(e)")
+    assert kind == "success" and text.startswith("Mit 4 Knoten gibt es 64 beschriftete Wurzelbäume; ohne Beschriftungen (Stück 5) wären es 4. 4 Rechenwege")
     assert ev.verdict_answers(ev.analyse(S("Mengenpartitionen", 1)))[1].startswith("Ein Element ergibt 1 Mengenpartition (Bell-Zahl).")
     assert ev.verdict_answers(ev.analyse(S("Wurzelbäume", 1)))[1].startswith("Mit 1 Knoten gibt es 1 beschrifteten Wurzelbaum;")
     assert ev.verdict_answers(ev.analyse(S("Permutationen", 3, 1, 150, 9)))[1].startswith("3 verschiedene Elemente ergeben 0 Permutationen mit genau 9 Zyklen")
@@ -47,14 +47,14 @@ def test_verdict_answers_for_trees_and_singular():
 
 def test_verdict_answers_reports_a_disagreement_as_an_error():
     a = ev.analyse(S())
-    broken = ev.Analysis(a.settings, a.n_eff, a.lo, a.hi, a.k, a.series, a.ways, a.steps, ["Aufzählen und Kalkül weichen ab"], [])
-    assert ev.verdict_answers(broken) == ("error", "Die Rechenwege widersprechen sich: Aufzählen und Kalkül weichen ab")
+    broken = ev.Analysis(a.settings, a.n_eff, a.lo, a.hi, a.k, a.series, a.ways, a.steps, ["Aufzählen und Binomialfaltung weichen ab"], [])
+    assert ev.verdict_answers(broken) == ("error", "Die Rechenwege widersprechen sich: Aufzählen und Binomialfaltung weichen ab")
 
 
 def test_way_rows_for_a_small_case():
     rows = ev.way_rows(ev.analyse(S("Mengenpartitionen", 8, 2, 2, 0)))
-    assert rows == [{"Weg": "Binomialfaltung (exp-Kalkül)", "Anzahl bei N": "105", "Schritte": "36", "Ergebnis": "gleich"},
-                    {"Weg": "Reihe mit Brüchen (exponentielle EGF)", "Anzahl bei N": "105", "Schritte": "81", "Ergebnis": "gleich"},
+    assert rows == [{"Weg": "Binomialfaltung (Hauptweg)", "Anzahl bei N": "105", "Schritte": "36", "Ergebnis": "gleich"},
+                    {"Weg": "Reihe mit Brüchen (gewöhnliche Reihe)", "Anzahl bei N": "105", "Schritte": "81", "Ergebnis": "gleich"},
                     {"Weg": "Formel n!/((g!)^(n/g)·(n/g)!)", "Anzahl bei N": "105", "Schritte": "1", "Ergebnis": "gleich"},
                     {"Weg": "Aufzählen aller Möglichkeiten", "Anzahl bei N": "105", "Schritte": "4.140", "Ergebnis": "gleich"}]
     assert ev.way_rows(ev.analyse(S("Mengenpartitionen", 12, 1, 4, 0)))[2] == {"Weg": "Dreieck, Rekursion oder Formel", "Anzahl bei N": "–", "Schritte": "–", "Ergebnis": "für diese Blockgrößen gibt es keine"}
@@ -85,7 +85,7 @@ def test_first_values_and_share():
 
 def test_why_rows_and_verdict():
     rows, trees = ev.why_rows(), ev.tree_why_rows()
-    assert [(r["n"], r["Bell-Zahl (mit Marken)"], r["Zahlpartitionen (ohne Marken, Stück 5)"]) for r in rows] == [(5, 52, 7), (10, 115975, 42), (15, 1382958545, 176), (20, 51724158235372, 627)]
+    assert [(r["n"], r["Bell-Zahl (mit Beschriftungen)"], r["Zahlpartitionen (ohne Beschriftungen, Stück 5)"]) for r in rows] == [(5, 52, 7), (10, 115975, 42), (15, 1382958545, 176), (20, 51724158235372, 627)]
     assert [(r["n"], r["beschriftet"], r["unbeschriftet (Stück 5)"]) for r in trees][:3] == [(5, 625, 9), (10, 10 ** 9, 719), (20, 20 ** 19, 12826228)]
     assert [round(r["beschriftet / (n!·unbeschriftet)"], 4) for r in trees] == [0.5787, 0.3833, 0.168, 0.0316, 0.0059]
     kind, text = ev.verdict_why(rows, trees)
@@ -118,17 +118,17 @@ def test_row_experiment_and_verdict():
 
 def test_effort_rows_and_verdict():
     rows = ev.effort_rows()
-    assert [r["n"] for r in rows] == list(C.EFFORT_NS) and [r["Summanden exp-Kalkül"] for r in rows] == [5050, 20100, 125250, 500500] == [r["Additionen Bell-Dreieck"] for r in rows]
+    assert [r["n"] for r in rows] == list(C.EFFORT_NS) and [r["Summanden Binomialfaltung"] for r in rows] == [5050, 20100, 125250, 500500] == [r["Additionen Bell-Dreieck"] for r in rows]
     assert [r["Stellen von B(n)"] for r in rows] == [116, 276, 844, 1928]
     kind, text = ev.verdict_effort(rows)
-    assert kind == "success" and text.startswith("Für n = 1000 sind es 500.500 Summanden im exp-Kalkül und ebenso viele Additionen im Bell-Dreieck; die Bell-Zahl hat 1.928 Stellen")
+    assert kind == "success" and text.startswith("Für n = 1000 sind es 500.500 Summanden in der Binomialfaltung und ebenso viele Additionen im Bell-Dreieck; die Bell-Zahl hat 1.928 Stellen")
 
 
 def test_time_experiment_shape_and_verdict_text():
-    rows = [{"n": 200, "exp-Kalkül (Sekunden)": 0.04, "Bell-Dreieck (Sekunden)": 0.002}, {"n": 500, "exp-Kalkül (Sekunden)": 1.0, "Bell-Dreieck (Sekunden)": 0.05}]
-    assert ev.verdict_time(rows) == ("info", "Gemessen auf diesem Rechner (Python): n = 500: exp-Kalkül 1,000 s, Bell-Dreieck 0,050 s (etwa das 20-fache). Eine Messung, keine Garantie.")
+    rows = [{"n": 200, "Binomialfaltung (Sekunden)": 0.04, "Bell-Dreieck (Sekunden)": 0.002}, {"n": 500, "Binomialfaltung (Sekunden)": 1.0, "Bell-Dreieck (Sekunden)": 0.05}]
+    assert ev.verdict_time(rows) == ("info", "Gemessen auf diesem Rechner (Python): n = 500: Binomialfaltung 1,000 s, Bell-Dreieck 0,050 s (etwa das 20-fache). Eine Messung, keine Garantie.")
     res = ev.time_experiment()
-    assert [r["n"] for r in res] == list(C.TIME_NS) and all(r["exp-Kalkül (Sekunden)"] >= 0 and r["Bell-Dreieck (Sekunden)"] >= 0 and r["exp-Kalkül mit Pascal-Dreieck (Sekunden)"] >= 0 for r in res)
+    assert [r["n"] for r in res] == list(C.TIME_NS) and all(r["Binomialfaltung (Sekunden)"] >= 0 and r["Bell-Dreieck (Sekunden)"] >= 0 and r["Binomialfaltung mit Pascal-Dreieck (Sekunden)"] >= 0 for r in res)
 
 
 def test_playground_rows_and_verdict():
@@ -141,3 +141,8 @@ def test_playground_rows_and_verdict():
     assert big["brute"] is None and ev.verdict_playground(big)[1].startswith("519.156 von 531.441 Zuordnungen (97,7 %) lassen keine Maschine leer; die Siebformel bestätigt")
     assert ev.verdict_playground(dict(res, sieve=1))[0] == "error" and ev.verdict_playground(dict(res, brute=1))[0] == "error"
     assert res["cluster_cap"] == A.l_pow_over_fact(A.blocks("Mengenpartitionen", 1, 4, 10), 3, 10)[10]
+
+
+def test_ways_text_singular_and_plural():
+    assert ev._ways_text(["Binomialfaltung (Hauptweg)"]) == "Der einzige gerechnete Weg (Binomialfaltung (Hauptweg)) gibt diese Zahl."
+    assert ev._ways_text(["A", "B"]) == "2 Rechenwege (A, B) geben dieselbe Zahl."

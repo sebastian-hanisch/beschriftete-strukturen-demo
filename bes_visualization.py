@@ -13,7 +13,7 @@ def lock_axes(fig):
 
 
 def _base(fig, height=360):
-    fig.update_layout(height=height, margin=dict(l=10, r=10, t=50, b=10), legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0), plot_bgcolor="rgba(0,0,0,0)")
+    fig.update_layout(height=height, margin=dict(l=10, r=10, t=50, b=10), legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0), plot_bgcolor="rgba(0,0,0,0)", separators=",.")
     return lock_axes(fig)
 
 
@@ -28,11 +28,11 @@ def build_growth(series: list[int], first_index: int = 0):
 
 
 def build_why(rows: list[dict]):
-    """Mengenpartitionen (mit Marken) gegen Zahlpartitionen (ohne Marken), logarithmische Achse."""
+    """Mengenpartitionen (mit Beschriftungen) gegen Zahlpartitionen (ohne Beschriftungen), logarithmische Achse."""
     fig = go.Figure()
     names = [str(r["n"]) for r in rows]
-    fig.add_trace(go.Bar(x=names, y=[A.log10_int(r["Bell-Zahl (mit Marken)"]) for r in rows], name="mit Marken (Bell)", marker_color=C.COLOR_MAIN))
-    fig.add_trace(go.Bar(x=names, y=[A.log10_int(r["Zahlpartitionen (ohne Marken, Stück 5)"]) for r in rows], name="ohne Marken (Zahlpartitionen)", marker_color=C.COLOR_ALL))
+    fig.add_trace(go.Bar(x=names, y=[A.log10_int(r["Bell-Zahl (mit Beschriftungen)"]) for r in rows], name="mit Beschriftungen (Bell)", marker_color=C.COLOR_MAIN))
+    fig.add_trace(go.Bar(x=names, y=[A.log10_int(r["Zahlpartitionen (ohne Beschriftungen, Stück 5)"]) for r in rows], name="ohne Beschriftungen (Zahlpartitionen)", marker_color=C.COLOR_ALL))
     fig.update_layout(barmode="group")
     fig.update_xaxes(title_text="n")
     fig.update_yaxes(title_text="Anzahl (Zehnerlogarithmus)")
@@ -57,7 +57,7 @@ def build_rows(res: dict):
     fig.add_trace(go.Bar(x=ks, y=res["c"], name="Permutationen c(n,k)", marker_color=C.COLOR_LINE))
     fig.update_layout(barmode="group")
     fig.update_xaxes(title_text="Zahl k der Blöcke beziehungsweise Zyklen", dtick=1)
-    fig.update_yaxes(title_text="Anzahl")
+    fig.update_yaxes(title_text="Anzahl", tickformat=",d")
     return _base(fig, 340)
 
 
@@ -67,7 +67,7 @@ def build_derangements(rows: list[dict]):
     fig.add_trace(go.Scatter(x=[r["n"] for r in rows], y=[r["D_n / n!"] for r in rows], mode="lines+markers", name="D_n / n!", line=dict(color=C.COLOR_MAIN)))
     fig.add_hline(y=0.36787944117144233, line=dict(color=C.COLOR_ALL, dash="dash"))
     fig.update_xaxes(title_text="n", type="log")
-    fig.update_yaxes(title_text="Anteil der Derangements", range=[0, 0.6])
+    fig.update_yaxes(title_text="Anteil der fixpunktfreien Permutationen", range=[0, 0.6])
     return _base(fig, 320)
 
 
@@ -75,7 +75,7 @@ def build_effort(rows: list[dict]):
     """Zehnerlogarithmus der Summanden gegen den der Mengenpartitionen B(n) (B(1000) passt in keine Gleitkommazahl)."""
     fig = go.Figure()
     names = [str(r["n"]) for r in rows]
-    fig.add_trace(go.Bar(x=names, y=[A.log10_int(r["Summanden exp-Kalkül"]) for r in rows], name="Summanden (Kalkül, Dreieck)", marker_color=C.COLOR_MAIN))
+    fig.add_trace(go.Bar(x=names, y=[A.log10_int(r["Summanden Binomialfaltung"]) for r in rows], name="Summanden (Binomialfaltung, Dreieck)", marker_color=C.COLOR_MAIN))
     fig.add_trace(go.Bar(x=names, y=[A.log10_int(r["Mengenpartitionen B(n)"]) for r in rows], name="Mengenpartitionen B(n) (Aufzählen)", marker_color=C.COLOR_ALL))
     fig.update_layout(barmode="group")
     fig.update_xaxes(title_text="n")

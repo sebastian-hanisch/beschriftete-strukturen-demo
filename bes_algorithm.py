@@ -1,4 +1,4 @@
-"""Rechenkern: der beschriftete Baukasten mit ganzen Zahlen (Binomialfaltung, Menge, Folge, Zyklus), Stirling-, Bell- und Derangement-Zahlen, beschriftete Wurzelbäume, Aufzählen.
+"""Rechenkern: das Zählen beschrifteter Strukturen mit ganzen Zahlen (Binomialfaltung, Menge, Folge, Zyklus), Stirling-, Bell-Zahlen und Zahlen der fixpunktfreien Permutationen, beschriftete Wurzelbäume, Aufzählen.
 
 Eine Folge `a` bedeutet a[n] = n!·[zⁿ]A(z), also die Zahl der beschrifteten Strukturen der Größe n (die Elemente 1 bis n sind verschieden). Alle Rechnungen mit `int` und `Fraction`;
 keine Gleitkommazahlen im Zählen."""
@@ -35,7 +35,7 @@ def log10_int(x: int) -> float:
     return shift + math.log10(x // 10 ** shift)
 
 
-# ----------------------------------------------------------------------------- Baukasten (a[0] = 0 für exp, Folge, Zyklus)
+# ----------------------------------------------------------------------------- Grundbausteine (a[0] = 0 für exp, Folge, Zyklus)
 
 def _check(a, n_max):
     if len(a) < n_max + 1:
@@ -43,7 +43,7 @@ def _check(a, n_max):
 
 
 def l_mul(a, b, n_max):
-    """Produkt zweier beschrifteter Strukturen: die Marken auf die beiden Teile verteilen, c_n = Summe_k C(n, k)·a_k·b_(n−k)."""
+    """Produkt zweier beschrifteter Strukturen: die Beschriftungen auf die beiden Teile verteilen, c_n = Summe_k C(n, k)·a_k·b_(n−k)."""
     _check(a, n_max)
     _check(b, n_max)
     return [sum(C(n, k) * a[k] * b[n - k] for k in range(n + 1)) for n in range(n_max + 1)]
@@ -78,7 +78,7 @@ def l_exp_pascal(a, n_max):
 
 
 def l_seq(a, n_max):
-    """Folge von Blöcken, 1/(1 − A) mit a[0] = 0: S_n = Summe_{k=1..n} C(n, k)·a_k·S_(n−k) (die ersten k Marken bilden den ersten Block)."""
+    """Folge von Blöcken, 1/(1 − A) mit a[0] = 0: S_n = Summe_{k=1..n} C(n, k)·a_k·S_(n−k) (die ersten k Beschriftungen bilden den ersten Block)."""
     _check(a, n_max)
     if a[0] != 0:
         raise ValueError("a[0] muss 0 sein")
@@ -256,7 +256,7 @@ def known_value(kind: str, lo: int, hi: int, k, n: int):
                 return "Fakultät", math.factorial(n)
             return "Stirling-Dreieck (erste Art)", stirling1_triangle(n)[n][k] if k <= n else 0
         if k is None and lo == 2 and full:
-            return "Rekursion der Derangements", derangements(n)[n]
+            return "Rekursion der fixpunktfreien Permutationen", derangements(n)[n]
         if k is None and lo == 1 and hi == 2:
             return "Rekursion der Involutionen", involutions(n)[n]
         return None
@@ -366,7 +366,7 @@ def partition_numbers(n_max):
 
 
 def unlabelled_rooted_trees(n_max):
-    """Wurzelbäume ohne Reihenfolge und ohne Marken (Stück 5): t[0] = 0, t[1] = 1, 1, 2, 4, 9, 20, …"""
+    """Wurzelbäume ohne Reihenfolge und ohne Beschriftungen (Stück 5): t[0] = 0, t[1] = 1, 1, 2, 4, 9, 20, …"""
     t = [0, 1] if n_max >= 1 else [0]
     c = [1]
     for size in range(1, n_max):

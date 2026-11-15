@@ -36,6 +36,6 @@ def test_setting_specs_cover_every_preset_key():
 def test_presets_show_what_their_help_says():
     stats = {name: ev.analyse(ev.Settings(**p)) for name, p in C.PRESETS.items()}
     assert stats["Clustering: 10 Punkte in 3 Cluster"].k == 3 and stats["Permutationen mit 3 Zyklen (Stirling erster Art)"].k == 3
-    assert stats["Derangements von 10"].lo == 2 and stats["Involutionen von 10"].hi == 2 and stats["Dreiergruppen: 12 Personen"].lo == stats["Dreiergruppen: 12 Personen"].hi == 3
+    assert stats["Fixpunktfreie Permutationen von 10"].lo == 2 and stats["Involutionen von 10"].hi == 2 and stats["Dreiergruppen: 12 Personen"].lo == stats["Dreiergruppen: 12 Personen"].hi == 3
     assert stats["Beschriftete Wurzelbäume (Cayley)"].settings.family == "Wurzelbäume"
     assert len({(a.settings.family, a.n_eff, a.lo, a.hi, a.k) for a in stats.values()}) == len(C.PRESETS) == len({a.series[a.n_eff] for a in stats.values()})

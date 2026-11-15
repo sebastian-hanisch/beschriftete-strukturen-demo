@@ -32,7 +32,7 @@ def _metrics(at) -> dict:
 def test_standard_case_shows_the_known_values_and_no_error():
     at = _app()
     assert not at.error
-    assert _metrics(at) == {"Anzahl bei 10 Elementen": "115.975", "Stellen der Anzahl": "6", "Anteil an allen Möglichkeiten": "1,0000", "Schritte der Rechnung": "55"}
+    assert _metrics(at) == {"Anzahl bei 10 Elementen": "115.975", "Stellen der Anzahl": "6", "Anteil an allen Mengenpartitionen": "1,0000", "Rechenschritte": "55"}
     assert any(e.value.startswith("10 verschiedene Elemente ergeben 115.975 Mengenpartitionen (Bell-Zahl).") for e in at.success)
     assert any(e.value == "Alle gerechneten Wege geben dieselbe Zahl." for e in at.success)
 
@@ -42,7 +42,7 @@ def test_experiments_two_to_five_show_their_verdicts_without_a_click():
     assert "Bei n = 20 gibt es 5,17·10¹³ (14 Stellen) Mengenpartitionen, aber nur 627 Zahlpartitionen" in text
     assert "D₁₀ = 1.334.961, also 36,79 % aller Permutationen" in text
     assert "fallen in nur 42 Zyklentypen" in text and "die größte Klasse ist 9 + 1 mit 403.200 Permutationen" in text
-    assert "Für n = 1000 sind es 500.500 Summanden im exp-Kalkül" in text
+    assert "Für n = 1000 sind es 500.500 Summanden in der Binomialfaltung" in text
     assert "55.980 von 59.049 Zuordnungen (94,8 %) lassen keine Maschine leer" in text
 
 
@@ -52,7 +52,7 @@ def test_time_measurement_runs_on_click():
     assert not at.exception and any("Gemessen auf diesem Rechner (Python)" in i.value for i in at.info)
 
 
-@pytest.mark.parametrize("name,value", [("Clustering: 10 Punkte in 3 Cluster", "9.330"), ("Derangements von 10", "1.334.961"), ("Involutionen von 10", "9.496"), ("Beschriftete Wurzelbäume (Cayley)", "1.000.000.000")])
+@pytest.mark.parametrize("name,value", [("Clustering: 10 Punkte in 3 Cluster", "9.330"), ("Fixpunktfreie Permutationen von 10", "1.334.961"), ("Involutionen von 10", "9.496"), ("Beschriftete Wurzelbäume (Cayley)", "1.000.000.000")])
 def test_presets_show_their_number(name, value):
     at = _app()
     at.sidebar.button(key=f"preset_{name}").click().run(timeout=TIMEOUT)
@@ -62,7 +62,7 @@ def test_presets_show_their_number(name, value):
 
 def test_trees_show_the_unlabelled_count_as_a_metric():
     at = _app({"family": "Wurzelbäume", "n": "10"})
-    assert _metrics(at)["Ohne Marken (Stück 5)"] == "719" and any("ohne Marken (Stück 5) wären es 719" in e.value for e in at.success)
+    assert _metrics(at)["Ohne Beschriftungen (Stück 5)"] == "719" and any("ohne Beschriftungen (Stück 5) wären es 719" in e.value for e in at.success)
 
 
 def test_trees_with_block_settings_show_a_note():
